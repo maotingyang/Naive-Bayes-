@@ -16,10 +16,11 @@ def create_table(cnx,cur):
 	cnx.commit()
 
 def read_data_file(file_name):
-	doc_list = open(file_name, encoding = 'utf8').readlines()
-	output = []
-	for doc in doc_list:
-		output.append(preprocess(doc))
+	with open(file_name, encoding = 'utf8') as thedoc:
+		doc_list = thedoc.readlines()
+		output = []
+		for doc in doc_list:
+			output.append(preprocess(doc))
 	return output
 
 def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
@@ -28,9 +29,9 @@ def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
 	pos_data_list = []
 	cnx = sqlite3.connect('model.db')
 	cur = cnx.cursor()
-	create_table(cnx,cur)
-	pos_data_list = read_data_file(positive_file_name)
-	neg_data_list = read_data_file(negative_file_name)
+	create_table(cnx,cur)	# 創建三個table(見create_table函式)
+	pos_data_list = read_data_file(positive_file_name)  # 從data/positive.txt 讀出正面句子的list
+	neg_data_list = read_data_file(negative_file_name)	# 從data/negative.txt 讀出負面句子的list
 
 #positive
 	pos_word_count_dic = {}
@@ -38,7 +39,7 @@ def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
 	for data in pos_data_list:
 		word_list = jieba.cut(data)
 		for word in word_list:
-			word = word.strip()
+			word = word.strip() 	# 移除string頭尾的空格
 			if len(word) > 0:
 				if word not in pos_word_count_dic:
 					pos_word_count_dic[word] = 0
