@@ -3,9 +3,13 @@ import datetime
 import jieba
 import sqlite3
 
+
+
+# 把文字前後空格、換行去掉
 def preprocess(input_str):
 	return input_str.strip()
 
+# 建一個sql資料庫，裡面放正負面句子及其數據
 def create_table(cnx,cur):
 	cur.execute('DROP TABLE IF EXISTS sentiment_positive_word')
 	cur.execute('DROP TABLE IF EXISTS sentiment_negative_word')
@@ -15,6 +19,7 @@ def create_table(cnx,cur):
 	cur.execute('CREATE TABLE sentiment_baseline (positive_document_count,negative_document_count,positive_word_count,negative_word_count)')
 	cnx.commit()
 
+# 讀出正、負面文件中蒐集來的句子
 def read_data_file(file_name):
 	with open(file_name, encoding = 'utf8') as thedoc:
 		doc_list = thedoc.readlines()
@@ -24,10 +29,12 @@ def read_data_file(file_name):
 	return output
 
 def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
+	# 更換結巴的主字典
+	# jieba.set_dictionary('../dict/dict.txt.big')
 	if user_dic_name != '':
 		jieba.load_userdict(user_dic_name)
 	pos_data_list = []
-	cnx = sqlite3.connect('model.db')
+	cnx = sqlite3.connect(model_path)
 	cur = cnx.cursor()
 	create_table(cnx,cur)	# 創建三個table(見create_table函式)
 	pos_data_list = read_data_file(positive_file_name)  # 從data/positive.txt 讀出正面句子的list
@@ -74,4 +81,4 @@ def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
 
 if __name__ == '__main__':
 	#jieba.load_userdict('dict/user_dic.dic')
-	training('../data/positive.txt','../data/negative.txt',model_path = 'model/')
+	training('../data/positive.txt','../data/negative.txt',model_path = '../model/model.db')

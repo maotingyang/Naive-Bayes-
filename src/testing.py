@@ -22,7 +22,7 @@ def load_training_data(model_path,user_dic_name=''):
 	global neg_word_count
 	global pos_prior
 	global neg_prior
-	cnx = sqlite3.connect('model.db')
+	cnx = sqlite3.connect(model_path)
 	cur = cnx.cursor()
 	cur.execute('SELECT word,value FROM sentiment_positive_word')
 	results = cur.fetchall()

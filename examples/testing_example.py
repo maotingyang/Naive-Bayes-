@@ -3,15 +3,15 @@ import sys
 sys.path.append('../src')
 import testing
 
-testing.load_training_data('../model/','../dict/user_dic.dic')
-result = testing.test_sentance('沒做功課就來討罵')
+testing.load_training_data('../model/model.db','../dict/dict.txt.big')
+result = testing.test_sentance('餓扁了')
 if result['pos'] > result['neg']:
 	print ('positive')
 elif result['neg'] > result['pos']:
 	print ('negative')
 else:
 	print ('neutral')
-result = testing.test_sentance('柯P萬歲')
+result = testing.test_sentance('天')
 if result['pos'] > result['neg']:
 	print ('positive')
 elif result['neg'] > result['pos']:
