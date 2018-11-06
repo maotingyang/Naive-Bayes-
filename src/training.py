@@ -80,5 +80,5 @@ def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
 #pass
 
 if __name__ == '__main__':
-	#jieba.load_userdict('dict/user_dic.dic')
-	training('../data/positive.txt','../data/negative.txt',model_path = '../model/model.db')
+	# jieba.load_userdict('dict/ntusd-full.dic')
+	training('../data/positive.txt','../data/negative.txt',model_path = '../model/ntusd_model.db', user_dic_name='../dict/ntusd-full.dic')
