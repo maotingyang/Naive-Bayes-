@@ -12,7 +12,6 @@ import testing
 
 # Flask app should start in global layout
 app = Flask(__name__)
-testing.load_training_data('../model/ntusd_model.db','../dict/ntusd-full.dic')
 
 @app.route("/", methods=['GET'])  # 這應該是測試的，對應忘記打webhook的情況
 def hello():
@@ -23,7 +22,8 @@ def webhook():
     req = request.get_json(silent=True, force=True)
     print("Request:")
     print(json.dumps(req, indent=4))
-
+    
+    testing.load_training_data('../model/key_word_model.db','../dict/dict.txt.big')
     res = makeWebhookResult(req)  # 把資料丟進我的機器學習模型，處理後再丟出來
 
     res = json.dumps(res, indent=4)
@@ -36,15 +36,11 @@ def makeWebhookResult(req):   # 程式邏輯之所在
     result = req.get("queryResult")
     parameters = result.get("parameters")
     comments = parameters.get("comments")
-    
-    if "咖啡" in comments:
-        comments = comments.replace("咖啡", "")  # 手動調整精確度...希望別如此
-        print(comments)
-
+    print(comments)
     result = testing.test_sentance(comments)  # 資料丟進機器學習模型，處理後再丟出來
     if result['pos'] > result['neg']:
         speech = '您開心我們也開心！期待很快能再見到您！'
-    elif result['neg'] > result['pos']:
+    elif result['neg'] > result['pos']: 
         speech = '對不起，似乎讓您有不好的體驗，隨即贈送折價券給您！'
     else:
         speech = '您的意見我們收到了，感謝您的稱讚和指教，我們會繼續努力，隨即贈送折價券給您！'

@@ -1,6 +1,7 @@
 import json
 import datetime
 import jieba
+import jieba.analyse
 import sqlite3
 
 
@@ -44,7 +45,9 @@ def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
 	pos_word_count_dic = {}
 	pos_word_count = 0
 	for data in pos_data_list:
-		word_list = jieba.cut(data)
+		word_list = jieba.cut(data, cut_all=True)  # 第一種：直接用結巴斷詞
+		# word_list = jieba.analyse.extract_tags(data, allowPOS=('a', 'ag', 'v', 'vd', 'y'))  # 第二種：用結巴提取關鍵字
+    
 		for word in word_list:
 			word = word.strip() 	# 移除string頭尾的空格
 			if len(word) > 0:
@@ -61,7 +64,8 @@ def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
 	neg_word_count_dic = {}
 	neg_word_count = 0
 	for data in neg_data_list:
-		word_list = jieba.cut(data)
+		word_list = jieba.cut(data, cut_all=True)  # 第一種：直接用結巴斷詞
+		# word_list = jieba.analyse.extract_tags(data, allowPOS=('a', 'ag', 'v', 'vd', 'y'))  # 第二種：用結巴提取關鍵字
 		for word in word_list:
 			word = word.strip()
 			if len(word) > 0:
@@ -81,4 +85,8 @@ def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
 
 if __name__ == '__main__':
 	# jieba.load_userdict('dict/ntusd-full.dic')
-	training('../data/positive.txt','../data/negative.txt',model_path = '../model/ntusd_model.db', user_dic_name='../dict/ntusd-full.dic')
+	training('../data/positive.txt','../data/negative.txt',model_path = '../model/model.db', user_dic_name='../dict/dict.txt.big')
+	# 自己測試斷詞
+	jieba.load_userdict('../dict/dict.txt.big')
+	seg_list = jieba.cut("很不爽", cut_all=True)
+	print("Full Mode: " + "/ ".join(seg_list))  # 全模式
