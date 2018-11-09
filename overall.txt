@@ -1,0 +1,3 @@
+目前看起來，jieba全斷詞的方式預測較準，字少也行得通(?
+用jieba拆出關鍵字的model字少時就不準了(字太少拆不出關鍵字))
+參考資料：http://www.aclweb.org/anthology/O12-5003

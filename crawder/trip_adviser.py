@@ -3,11 +3,11 @@ import time
 from bs4 import BeautifulSoup
 
 driver = webdriver.Chrome() 
-driver.get(r"https://www.tripadvisor.com.tw/Search?q=%E5%92%96%E5%95%A1&sid=37B87F3EAA43331583A4565120991E701541430260855&ssrc=e&geo=297908&rf=2")
+driver.get(r"https://www.tripadvisor.com.tw/Search?q=%E5%92%96%E5%95%A1&sid=0FEDD72C7DC6D9CEC9D6393EDA2D3E651541731605041&ssrc=e&geo=293913&o=90&rf=8")
 window_before = driver.window_handles[0]   # 處理主頁
 windowCounts = 1  # 視窗指標
 
-for shop in range(1,10):    
+for shop in range(1,31):    
     time.sleep(6)
     # 點進第一家餐廳
     try:
@@ -43,39 +43,42 @@ for shop in range(1,10):
         for comment in badComment:
             print(comment, file=badtxt)
 
-    driver.switch_to_window(window_before)
-    driver.find_element_by_xpath(u"(.//*[normalize-space(text()) and normalize-space(.)='餐廳'])[" + str(shop) + "]/following::span[1]").click()
-    time.sleep(3)
-    windowCounts += 1
-    window_third = driver.window_handles[windowCounts]  #第二個新視窗
-    driver.switch_to_window(window_third)
-    time.sleep(7)    
-    driver.find_element_by_id("taplc_location_review_filter_controls_0_filterRating_1").click()
-    time.sleep(2)
-    driver.find_element_by_id('taplc_location_review_filter_controls_0_filterRating_2').click()
-    time.sleep(2)
-    driver.find_element_by_id("taplc_location_review_filter_controls_0_filterRating_3").click()
-    time.sleep(2)
-    driver.find_element_by_id("taplc_location_review_filter_controls_0_filterRating_4").click()
-    time.sleep(2)
-    driver.find_element_by_id("taplc_location_review_filter_controls_0_filterRating_5").click()
-    time.sleep(2)
+    # driver.switch_to_window(window_before)
+    # driver.find_element_by_xpath(u"(.//*[normalize-space(text()) and normalize-space(.)='餐廳'])[" + str(shop) + "]/following::span[1]").click()
+    # time.sleep(3)
+    # windowCounts += 1
+    # window_third = driver.window_handles[windowCounts]  #第二個新視窗
+    # driver.switch_to_window(window_third)
+    # time.sleep(7)    
+    # driver.find_element_by_id("taplc_location_review_filter_controls_0_filterRating_1").click()
+    # time.sleep(2)
+    # driver.find_element_by_id('taplc_location_review_filter_controls_0_filterRating_2').click()
+    # time.sleep(2)
+    # driver.find_element_by_id("taplc_location_review_filter_controls_0_filterRating_3").click()
+    # time.sleep(2)
+    # driver.find_element_by_id("taplc_location_review_filter_controls_0_filterRating_4").click()
+    # time.sleep(2)
+    # driver.find_element_by_id("taplc_location_review_filter_controls_0_filterRating_5").click()
+    # time.sleep(2)
+    
     # 爬下正評
-    goodComment = []
-    for page in range(2,7):
-        soup = BeautifulSoup(driver.page_source, 'lxml')
-        for comment in soup.select('.partial_entry',limit=6):
-            print(comment.get_text())
-            goodComment.append(comment.get_text())
-        try:
-            driver.find_element_by_link_text(str(page)).click()
-            time.sleep(3)
-            print('=============================================')
-        except:
-            break
-    with open('../data/positive.txt', 'at', encoding='utf-8') as goodtxt:
-        for comment in goodComment:
-            print(comment, file=goodtxt)
+    # goodComment = []
+    # for page in range(2,7):
+    #     soup = BeautifulSoup(driver.page_source, 'lxml')
+    #     for comment in soup.select('.partial_entry',limit=6):
+    #         print(comment.get_text())
+    #         goodComment.append(comment.get_text())
+    #     try:
+    #         driver.find_element_by_link_text(str(page)).click()
+    #         time.sleep(3)
+    #         print('=============================================')
+    #     except:
+    #         break
+    # with open('../data/positive.txt', 'at', encoding='utf-8') as goodtxt:
+    #     for comment in goodComment:
+    #         print(comment, file=goodtxt)
+
+    # 回到主頁，準備爬下一家
     driver.switch_to_window(window_before)
     windowCounts += 1
 # driver.close()  # 關閉瀏覽器

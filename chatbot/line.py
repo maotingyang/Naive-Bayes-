@@ -23,7 +23,7 @@ def webhook():
     print("Request:")
     print(json.dumps(req, indent=4))
     
-    testing.load_training_data('../model/key_word_model.db','../dict/dict.txt.big')
+    testing.load_training_data('../model/model.db','../dict/dict.txt.big')
     res = makeWebhookResult(req)  # 把資料丟進我的機器學習模型，處理後再丟出來
 
     res = json.dumps(res, indent=4)

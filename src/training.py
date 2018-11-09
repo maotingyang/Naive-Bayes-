@@ -45,7 +45,7 @@ def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
 	pos_word_count_dic = {}
 	pos_word_count = 0
 	for data in pos_data_list:
-		word_list = jieba.cut(data, cut_all=True)  # 第一種：直接用結巴斷詞
+		word_list = jieba.cut(data ,cut_all=True)  # 第一種：直接用結巴斷詞
 		# word_list = jieba.analyse.extract_tags(data, allowPOS=('a', 'ag', 'v', 'vd', 'y'))  # 第二種：用結巴提取關鍵字
     
 		for word in word_list:

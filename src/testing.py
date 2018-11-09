@@ -43,7 +43,7 @@ def load_training_data(model_path,user_dic_name=''):
 	neg_prior = negative_document_count/(negative_document_count+positive_document_count)
 
 def test_sentance(input_sentence):
-	word_list = jieba.cut(input_sentence.strip()) # 第一種：直接用結巴斷詞 
+	word_list = jieba.cut(input_sentence.strip(), cut_all=True) # 第一種：直接用結巴斷詞 
 	# word_list = jieba.analyse.extract_tags(input_sentence)  # 第二種：用結巴提取關鍵字
 	#print ','.join(word_list).encode('utf-8')
 	pos_result = math.log(pos_prior)
@@ -82,4 +82,4 @@ def test_sentance(input_sentence):
 if __name__ == '__main__':
 	# 自己測試斷詞
 	load_training_data('../model/model.db', user_dic_name='../dict/dict.txt.big')
-	test_sentance("""店員親切，食物好吃""")
+	test_sentance("""很難喝""")
