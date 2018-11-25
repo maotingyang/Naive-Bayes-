@@ -37,9 +37,9 @@ def makeWebhookResult(req):   # 程式邏輯之所在
     comments = parameters.get("comments")
     print(comments)
     result = emo_classify.retrieve(comments)  # 資料丟進機器學習模型，處理後再丟出來
-    if result['emo'].sum() > 0:
+    if result['emo'].iloc[0] > 0:
         speech = '您開心我們也開心！期待很快能再見到您！'
-    elif result['emo'].sum() < 0: 
+    elif result['emo'].iloc[0] < 0: 
         speech = '對不起，似乎讓您有不好的體驗，隨即贈送折價券給您！'
     else:
         speech = '您的意見我們收到了，感謝您的稱讚和指教，我們會繼續努力，隨即贈送折價券給您！'

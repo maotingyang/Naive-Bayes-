@@ -57,7 +57,7 @@ def preprocess(item):  ##定義前處理的function
     # 請把將每一行用jieba.cut進行分詞(記得將cut_all設定為True)
     # 同時建立所有詞彙的list(all_terms)
     #=============your works starts===============#
-    terms = [t for t in jieba.cut(item, cut_all=True) if t not in stops]  ## 把全切分模式打開，可以比對的詞彙比較多
+    terms = [t for t in jieba.cut(item, cut_all=True)]  ## 把全切分模式打開，可以比對的詞彙比較多
     all_terms.extend(terms)  ## 收集所有出現過的字
     #==============your works ends================#
     return terms
