@@ -3,8 +3,7 @@ import datetime
 import jieba
 import jieba.analyse
 import sqlite3
-
-
+import random
 
 # 把文字前後空格、換行去掉
 def preprocess(input_str):
@@ -27,6 +26,7 @@ def read_data_file(file_name):
 		output = []
 		for doc in doc_list:
 			output.append(preprocess(doc))
+	random.shuffle(output)		
 	return output
 
 def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
@@ -44,10 +44,9 @@ def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
 #positive
 	pos_word_count_dic = {}
 	pos_word_count = 0
-	for data in pos_data_list:
+	for data in pos_data_list[:599]:
 		word_list = jieba.cut(data ,cut_all=True)  # 第一種：直接用結巴斷詞
 		# word_list = jieba.analyse.extract_tags(data, allowPOS=('a', 'ag', 'v', 'vd', 'y'))  # 第二種：用結巴提取關鍵字
-    
 		for word in word_list:
 			word = word.strip() 	# 移除string頭尾的空格
 			if len(word) > 0:
@@ -59,11 +58,13 @@ def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
 		sql = "INSERT INTO sentiment_positive_word (word,value) VALUES (?,?)"
 		value = float(pos_word_count_dic[word]+1)/pos_word_count
 		cur.execute(sql,(word,value))
-
+	with open('../data/positive_test.txt', 'w', encoding='utf8') as positive_test:  # 寫下測試檔案
+		for line in pos_data_list[600:]:
+			positive_test.write(line + '\n')
 #negative
 	neg_word_count_dic = {}
 	neg_word_count = 0
-	for data in neg_data_list:
+	for data in neg_data_list[:599]:
 		word_list = jieba.cut(data, cut_all=True)  # 第一種：直接用結巴斷詞
 		# word_list = jieba.analyse.extract_tags(data, allowPOS=('a', 'ag', 'v', 'vd', 'y'))  # 第二種：用結巴提取關鍵字
 		for word in word_list:
@@ -77,6 +78,9 @@ def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
 		sql = "INSERT INTO sentiment_negative_word (word,value) VALUES (?,?)"
 		value = float(neg_word_count_dic[word]+1)/neg_word_count
 		cur.execute(sql,(word,value))
+	with open('../data/negative_test.txt', 'w', encoding='utf8') as negative_test:  # 寫下測試檔案
+		for line in neg_data_list[600:]:
+			negative_test.write(line + '\n')
 
 	sql = "INSERT INTO sentiment_baseline (positive_document_count,negative_document_count,positive_word_count,negative_word_count) VALUES (?,?,?,?)"
 	cur.execute(sql,(len(pos_data_list),len(neg_data_list),pos_word_count,neg_word_count))

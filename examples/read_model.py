@@ -1,7 +1,7 @@
 import sqlite3
 
 try:
-    conn = sqlite3.connect("../model/key_word_model.db")
+    conn = sqlite3.connect("../model/model.db")
 except Error as e:
     print(e)
  
