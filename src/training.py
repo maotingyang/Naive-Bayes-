@@ -44,8 +44,8 @@ def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
 #positive
 	pos_word_count_dic = {}
 	pos_word_count = 0
-	for data in pos_data_list[:599]:
-		word_list = jieba.cut(data ,cut_all=True)  # 第一種：直接用結巴斷詞
+	for data in pos_data_list[:600]:
+		word_list = jieba.cut(data ,cut_all=False)  # 第一種：直接用結巴斷詞
 		# word_list = jieba.analyse.extract_tags(data, allowPOS=('a', 'ag', 'v', 'vd', 'y'))  # 第二種：用結巴提取關鍵字
 		for word in word_list:
 			word = word.strip() 	# 移除string頭尾的空格
@@ -64,8 +64,8 @@ def training(positive_file_name,negative_file_name,model_path,user_dic_name=''):
 #negative
 	neg_word_count_dic = {}
 	neg_word_count = 0
-	for data in neg_data_list[:599]:
-		word_list = jieba.cut(data, cut_all=True)  # 第一種：直接用結巴斷詞
+	for data in neg_data_list[:600]:
+		word_list = jieba.cut(data, cut_all=False)  # 第一種：直接用結巴斷詞
 		# word_list = jieba.analyse.extract_tags(data, allowPOS=('a', 'ag', 'v', 'vd', 'y'))  # 第二種：用結巴提取關鍵字
 		for word in word_list:
 			word = word.strip()

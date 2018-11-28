@@ -82,6 +82,7 @@ def test_sentance(input_sentence):
 if __name__ == '__main__':
 	# 自己測試斷詞
 	load_training_data('../model/model.db', user_dic_name='../dict/dict.txt.big')
+	# print(test_sentance('難以下嚥'))
 	with open('../data/positive_test.txt', encoding='utf8') as posi:
 		positive_list = posi.readlines()
 		posi_all = len(positive_list)

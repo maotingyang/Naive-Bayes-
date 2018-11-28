@@ -18,6 +18,7 @@
 # In[15]:
 import jieba
 import sys
+import random
 sys.path.append('../dict')
 
 jieba.set_dictionary('../dict/dict.txt.big')  # 如果是使用繁體文字，請記得去下載繁體字典來使用
@@ -32,24 +33,27 @@ emo_dict = {'emo':[], 'text':[]}
 
 # 加入正面句
 with open('positive.txt', encoding='utf8') as data:
-    for line in data:
+    pos_train_list = data.readlines()
+    random.shuffle(pos_train_list)
+    for line in pos_train_list[:600]:
         line = line.strip()
         emo_dict['emo'].append(1)
         emo_dict['text'].append(line)
-
+    with open('pos_2_test.txt', 'w', encoding='utf8') as data:
+        for line in pos_train_list[600:]:
+    	    data.write(line + '\n')
 # 加入負面句  
 with open('negative.txt', encoding='utf8') as data:
-    for line in data:
+    neg_train_list = data.readlines()
+    random.shuffle(neg_train_list)
+    for line in neg_train_list[:600]:
         line = line.strip()
         emo_dict['emo'].append(-1)
         emo_dict['text'].append(line)
-        
+    with open('neg_2_test.txt', 'w', encoding='utf8') as data:
+        for line in neg_train_list[600:]:
+    	    data.write(line + '\n')    
 df_emo = pd.DataFrame(emo_dict)
-df_emo[0:4]
-
-
-# In[8]:
-
 
 #前處理
 all_terms = []
@@ -63,7 +67,6 @@ def preprocess(item):  ##定義前處理的function
     return terms
 
 df_emo['processed'] = df_emo.text.apply(preprocess)
-df_emo.head()
 
 # df_question['processed'] = df_question['question'].apply(preprocess)
 # print(df_question.iloc[0])
@@ -73,9 +76,6 @@ df_emo.head()
 # # Name: 0, dtype: object
 
 # df_question.head()
-
-
-# In[9]:
 
 
 # 建立termindex: 將all_terms取出不重複的詞彙，並轉換型別為list(避免順序亂掉)
@@ -98,6 +98,7 @@ for term in termindex:  ## 對index中的詞彙跑回圈
 # 建立document vector
 def terms_to_vector(terms):  ## 定義把terms轉換成向量的function
     ## 建立一條與termsindex等長、但值全部為零的向量(hint:dtype=np.float32)
+    # 還記得嗎？termindex為不重複的所有詞集合
     #=============your works starts===============#
     vector = np.zeros_like(termindex, dtype=np.float32)  
     #==============your works ends================#
@@ -165,13 +166,38 @@ def retrieve(testing_sentence, return_num=3):  ## 定義出檢索引擎
     #=============your works starts===============#
     testing_vector = terms_to_vector(preprocess(testing_sentence))  ## 把剛剛的前處理、轉換成向量的function，應用在使用者輸入的問題上
     idx_score_mapping = [(idx, cosine_similarity(testing_vector, vec)) for idx, vec in enumerate(df_emo['vector'])]
-    top3_idxs = np.array(sorted(idx_score_mapping, key=lambda x:x[1], reverse=True))[:3, 0]
+    top3_idxs = np.array(sorted(idx_score_mapping, key=lambda x:x[1], reverse=True))[:1, 0]
     #==============your works ends================#
-    
+    # print(top3_idxs)
     return df_emo.loc[top3_idxs, ['emo', 'text']]
 
+# 自我測試
+with open('pos_2_test.txt', encoding='utf8') as data:
+    pos_data = data.readlines()
+    pos_all = len(pos_data)
+    pos_valid = 0
+    pos_false = 0
+    for line in pos_data:
+        if retrieve(line)['emo'].values[0] == 1:
+            pos_valid += 1
+        else:
+            pos_false += 1
+    print("正向句正確率：{:.2f}%，正向句錯誤率：{:.2f}%".format(pos_valid/pos_all*100,pos_false/pos_all*100))         
 
-print(retrieve("咖啡有點酸"))
+with open('neg_2_test.txt', encoding='utf8') as data:
+    neg_data = data.readlines()
+    neg_all = len(neg_data)
+    neg_valid = 0
+    neg_false = 0
+    for line in neg_data:
+        if retrieve(line)['emo'].values[0] == -1:
+            neg_valid += 1
+        else:
+            neg_false += 1                
+    print("負向句正確率：{:.2f}%，負向句錯誤率：{:.2f}%".format(neg_valid/neg_all*100,neg_false/neg_all*100))
+    for line in neg_data[:20]:
+        print(retrieve(line)[['emo','text']]) 
+
 # Float64Index([100.0, 111.0, 321.0], dtype='float64')
 
 
